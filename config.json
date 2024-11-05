@@ -1,0 +1,40 @@
+{
+    "experiment_name": "Baseline for Cityscape",
+    "Description":"Training baseline model for Cityscape dataset",
+    "dataset_version": "1",
+
+
+    "training_dir":"",
+    "output_dir": "",
+    "model_name": "baseline",
+
+    "model_architecture": "Unet",
+    "backbone":"resnet50",
+    "loss": "cce_dice",
+    "preprocessing_config": {"mean":[0,0,0], "std_dev":[1,1,1]},
+    "preprocessing_type": "global",
+    "lr": 0.0001,
+
+    "batch_size":10,
+    "epochs":100,
+    "classes": 2,
+    "tile_size": 512,
+    "device_id": 2,
+    "patience": 50,
+
+    "augmentations": 
+                    {   
+                        "save_augmentations": false,
+                        "save_path":"",
+
+                        "geometric":
+                                    {
+                                        "zoom": 0.3,
+                                        "rotation": 1.0
+                                    },
+
+                        "color":{
+                                    "contrast_brightness_gamma": 0.3
+                                }
+                    }
+}
