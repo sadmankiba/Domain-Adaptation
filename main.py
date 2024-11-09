@@ -7,7 +7,9 @@ from utils import get_config_dict
 from infer_config import config as infer_config_dict
 
 
-CONFIG_FILE_PATH = "/home/arshadk/Projects/Code_base/Torch_Training_Script/config.json"
+
+
+CONFIG_FILE_PATH = "config.json"
 TRAIN_MODEL = True
 INFER_MODEL = False
 

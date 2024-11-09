@@ -21,6 +21,19 @@ from torch.utils.tensorboard import SummaryWriter
 from torch.optim.lr_scheduler import StepLR, CosineAnnealingLR
 import torch.nn as F
 from tensorboard import program
+import random
+
+# Seeds
+# Set a seed for torch, numpy, and Python's random module for full reproducibility
+seed = 42
+torch.manual_seed(seed)
+np.random.seed(seed)
+random.seed(seed)
+
+# For GPU operations, set the seed for CUDA as well
+if torch.cuda.is_available():
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
 
 
 
@@ -237,7 +250,7 @@ def train_model(config):
             # torch.save(model, save_path)
             best_loss = mean_val_loss
             best_epoch = epoch
-            best_dice = np.mean(classwsie_global_val_dice[1:])
+            best_dice = np.mean(classwsie_global_val_dice)
             patience_count = 0
             print(f"\nNew model saved with Loss {mean_val_loss:.3f} and Dice {best_dice:.3f} at epoch {epoch}")
 

@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 import os
 import albumentations as A
-from skimage import color
+#from skimage import color
 
 
 # HED STAIN AUGMENTATION

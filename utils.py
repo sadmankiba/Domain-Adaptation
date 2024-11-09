@@ -4,13 +4,13 @@ import numpy as np
 
 
 
-def get_config_dict(config_file_path):
+def get_config_dict(CONFIG_FILE_PATH):
 
     '''Read Config File'''
 
     with open(CONFIG_FILE_PATH, 'r') as file:
         json_string = file.read()
-        config_dict = json.read()
+        config_dict = json.loads(json_string)
 
     return config_dict
 

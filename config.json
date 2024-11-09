@@ -1,12 +1,13 @@
 {
-    "experiment_name": "Baseline for Cityscape",
-    "Description":"Training baseline model for Cityscape dataset",
-    "dataset_version": "1",
+    "experiment_name": "Baseline for Cityscape with 20 classes",
+    "Description":"Training baseline model for Cityscape dataset with no augmentations",
+    "dataset_version": "CityScape_v1.1(5000 images data with 20 classes)",
 
 
-    "training_dir":"",
-    "output_dir": "",
-    "model_name": "baseline",
+    "training_dir":"/users/Sadman/Test_Time_Domain_Adaptation/data/",
+    "output_dir": "/users/Sadman/Test_Time_Domain_Adaptation/Experiments/",
+    "retrain_path": null,
+    "model_name": "baseline_resnet50_20_classes",
 
     "model_architecture": "Unet",
     "backbone":"resnet50",
@@ -15,26 +16,12 @@
     "preprocessing_type": "global",
     "lr": 0.0001,
 
-    "batch_size":10,
+    "batch_size":6,
     "epochs":100,
-    "classes": 2,
-    "tile_size": 512,
-    "device_id": 2,
+    "classes": 20,
+    "tile_size": 1024,
+    "device_id": 0,
     "patience": 50,
 
-    "augmentations": 
-                    {   
-                        "save_augmentations": false,
-                        "save_path":"",
-
-                        "geometric":
-                                    {
-                                        "zoom": 0.3,
-                                        "rotation": 1.0
-                                    },
-
-                        "color":{
-                                    "contrast_brightness_gamma": 0.3
-                                }
-                    }
+    "augmentations": null
 }
