@@ -1,6 +1,6 @@
 {
-    "experiment_name": "Baseline for Cityscape with 20 classes",
-    "Description":"Training baseline model for Cityscape dataset with no augmentations",
+    "experiment_name": "Baseline for Cityscape with 20 classes with Basic Augmentation",
+    "Description":"Training baseline model for Cityscape dataset with augmentations. The Augmentations include basic augmnetations like Random Flip, Rotate with 2 border, Brightness, Contrast and Gamma. No Foggy condition is added",
     "dataset_version": "CityScape_v1.1(5000 images data with 20 classes)",
 
 
@@ -23,5 +23,5 @@
     "device_id": 0,
     "patience": 50,
 
-    "augmentations": null
+    "augmentations": true
 }

@@ -1,7 +1,7 @@
 import os
 import cv2
 import torch
-from augmentations import augment_data
+from augmentations import augment_data, Augmentor
 import numpy as np
 import torchvision.transforms as T
 import random
@@ -30,6 +30,7 @@ class Dataloader():
         self.mean = preprocessing_config["mean"]
         self.std_dev = preprocessing_config["std_dev"]
         self.preprocessor = T.Compose([T.ToTensor(), T.Normalize(mean=self.mean, std=self.std_dev)])
+        self.augmetor = Augmentor()
         #self.image_name_list = [image_name for image_name in os.listdir(self.image_dir) if image_name.endswith(".png")]
         print("Total Data", len(self.image_name_list))
 
@@ -54,15 +55,16 @@ class Dataloader():
         
         # Augmentations
         if self.augmentations is not None:
-            #img, label = augment_data(img, label, self.augmentations)
 
-            if self.augmentations["save_augmentations"]:
-                image_save_path = os.path.join(self.augmentations["save_path"], self.image_name_list[index])        
-                label_save_path = os.path.join(self.augmentations["save_path"], "Label", self.image_name_list[index].replace(".png", "_modlabel.png"))
-                os.makedirs(os.path.join(self.augmentations["save_path"], "Label"), exist_ok= True)
+            img, label = self.augmetor.augment_image(image = img, label = label)
+            
+            # if self.augmentations["save_augmentations"]:
+            #     image_save_path = os.path.join(self.augmentations["save_path"], self.image_name_list[index])        
+            #     label_save_path = os.path.join(self.augmentations["save_path"], "Label", self.image_name_list[index].replace(".png", "_modlabel.png"))
+            #     os.makedirs(os.path.join(self.augmentations["save_path"], "Label"), exist_ok= True)
 
-                cv2.imwrite(image_save_path, img)
-                cv2.imwrite(label_save_path, label)
+            #     cv2.imwrite(image_save_path, img)
+            #     cv2.imwrite(label_save_path, label)
 
 
                 

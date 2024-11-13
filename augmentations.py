@@ -30,9 +30,31 @@ def hed_augmentation(img, theta=0.02):
 
     return rsimg
 
+class Augmentor():
+    
+    def __init__(self):
+        
+        augmentation_list = [A.HorizontalFlip(p=0.3),  
+                             A.Rotate(limit=30, p=0.2, border_mode=cv2.BORDER_CONSTANT, value=(0, 0, 0)),
+                             A.RandomBrightnessContrast(brightness_limit=0.15, contrast_limit=0.2, p=0.3),
+                             A.RandomGamma(gamma_limit=(80, 120), p=0.5)]
+
+        self.augmentor = A.Compose(augmentation_list)
+        
+    def augment_image(self, image, label):
+
+        augmented_data = self.augmentor(image=image, mask=label)
+        augmented_image = augmented_data["image"]
+        augmented_label = augmented_data["mask"]
+
+        return augmented_image, augmented_label
+    
 
 
+
+    
 def augment_data(img, label, augmentations):
+    
 
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 

@@ -163,10 +163,6 @@ def train_model(config):
             # Collect loss value
             train_loss_list.append(loss.item())
 
-            #Save Output
-            # pred_output_copy = softmax(pred_output.detach().clone())
-            # plt.imsave(save_dir + str(_) + "_pred.png", pred_output_copy.cpu().numpy()[0,1, :, :])
-            # plt.imsave(save_dir + str(_) + "_gt.png", y.detach().cpu().numpy()[0,:, :])
 
             # Metric Calculation
             pred_output_copy = softmax(pred_output.detach().clone()).argmax(1)
@@ -253,14 +249,18 @@ def train_model(config):
             best_dice = np.mean(classwsie_global_val_dice)
             patience_count = 0
             print(f"\nNew model saved with Loss {mean_val_loss:.3f} and Dice {best_dice:.3f} at epoch {epoch}")
+            save_path = os.path.join(config["output_dir"], "best_model_epoch_{}_loss_{}.model".format(str(epoch), str(round(mean_val_loss, 3))))
+            torch.save(model, save_path)
+        
+            
 
         else:
             patience_count +=1
             print(f"\nlast model save with Loss {best_loss} and Dice {best_dice:.3f} at epoch {best_epoch}")
 
         # SAVE ALL MODELS
-        save_path = os.path.join(config["output_dir"], "epoch_{}_loss_{}.model".format(str(epoch), str(round(mean_val_loss, 3))))
-        torch.save(model, save_path)
+        #save_path = os.path.join(config["output_dir"], "epoch_{}_loss_{}.model".format(str(epoch), str(round(mean_val_loss, 3))))
+        #torch.save(model, save_path)
             
         if patience_count > config["patience"]:
             print("Early Stopping")
