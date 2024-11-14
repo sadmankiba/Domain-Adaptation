@@ -10,8 +10,8 @@ from infer_config import config as infer_config_dict
 
 
 CONFIG_FILE_PATH = "config.json"
-TRAIN_MODEL = True
-INFER_MODEL = False
+TRAIN_MODEL = False
+INFER_MODEL = True
 
 
 

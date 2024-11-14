@@ -38,7 +38,7 @@ def infer_model(model_config, data_path, output_path =None, gt_path = None):
     metric_object = ImageMetrics(classes = classes)
     
 
-    for image_path in tqdm(glob(data_path + "*.png")):
+    for image_path in tqdm(glob(data_path + "*0.01.png")):
 
         # READ IMAGE
         image_name = os.path.basename(image_path)
@@ -46,11 +46,13 @@ def infer_model(model_config, data_path, output_path =None, gt_path = None):
         img = preprocessor(img)
         img = torch.unsqueeze(img, 0)
 
-
+        # hamburg_000000_002338_leftImg8bit_foggy_beta_0.01.png
+        # hamburg_000000_002338_gtFine_labelIds
         # READ GT
         if gt_path is not None:
             label_name = os.path.basename(image_path)
-            label_path = os.path.join(gt_path, label_name.replace(".png", ".png"))
+            image_path.find("leftImg8bit")
+            label_path = os.path.join(gt_path, label_name.replace("leftImg8bit_foggy_beta_0.01", "gtFine_labelIds"))
             label = cv2.imread(label_path)
             label = cv2.cvtColor(label, cv2.COLOR_BGR2GRAY)
             label = color_encoding(label)
@@ -85,3 +87,5 @@ def infer_model(model_config, data_path, output_path =None, gt_path = None):
             print(f"Dice:{dice[class_index]:.2f}")
             print(f"Recall:{recall[class_index]:.2f}")
             print(f"Precision:{precision[class_index]:}")
+            
+        print(f"Global Dice: {sum(dice)/classes:.2f}")        
