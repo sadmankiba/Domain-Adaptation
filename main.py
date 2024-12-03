@@ -28,6 +28,7 @@ if __name__ == "__main__":
     if INFER_MODEL:
         data_path = infer_config_dict["training_data"]
         output_path = infer_config_dict["output_dir"]
+        os.makedirs(output_path, exist_ok = True)
         infer_model(infer_config_dict, data_path, gt_path=infer_config_dict["gt_path"],output_path=output_path)
         
     

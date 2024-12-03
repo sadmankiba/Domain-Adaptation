@@ -39,7 +39,12 @@ class Dataloader():
 
 
     def __getitem__(self, index):
-
+        """
+        
+        Returns:
+            img: Tensor. Shape: (3, 512, 1024). Float Tensor
+            label: Tensor. Shape: (512, 1024). Long Tensor
+        """
         # Read Image
         img = cv2.imread(self.image_name_list[index])
         label = cv2.imread(self.label_list[index])

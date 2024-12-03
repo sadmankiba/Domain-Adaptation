@@ -38,11 +38,17 @@ def infer_model(model_config, data_path, output_path =None, gt_path = None):
     metric_object = ImageMetrics(classes = classes)
     
 
-    for image_path in tqdm(glob(data_path + "*0.01.png")):
+    for image_path in tqdm(glob(data_path + "*0.005.png")):
+   
 
         # READ IMAGE
         image_name = os.path.basename(image_path)
         img = cv2.imread(image_path)
+
+        img = cv2.resize(img, (1024, 512), interpolation=cv2.INTER_CUBIC)
+        
+
+    
         img = preprocessor(img)
         img = torch.unsqueeze(img, 0)
 
@@ -52,9 +58,11 @@ def infer_model(model_config, data_path, output_path =None, gt_path = None):
         if gt_path is not None:
             label_name = os.path.basename(image_path)
             image_path.find("leftImg8bit")
-            label_path = os.path.join(gt_path, label_name.replace("leftImg8bit_foggy_beta_0.01", "gtFine_labelIds"))
+            label_path = os.path.join(gt_path, label_name.replace("leftImg8bit_foggy_beta_0.005", "gtFine_labelIds"))
+            #label_path = os.path.join(gt_path, label_name.replace("leftImg8bit", "gtFine_labelIds"))
             label = cv2.imread(label_path)
             label = cv2.cvtColor(label, cv2.COLOR_BGR2GRAY)
+            label = cv2.resize(label, (1024, 512), interpolation=cv2.INTER_LINEAR_EXACT)
             label = color_encoding(label)
             label = torch.tensor(label).long()
             label.to(device)

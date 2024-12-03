@@ -79,7 +79,6 @@ def train_model(config):
         model = torch.load(config["retrain_path"])
     
 
-
     model.to(device)
     model.__setattr__("config", config)
 

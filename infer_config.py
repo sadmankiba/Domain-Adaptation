@@ -1,18 +1,18 @@
-config = {
-
+without_aug_config = {
     # Paths
-    # "output_dir": "/mnt/prj002/Dev Kumar/Liver/Ano_Data/BD_MG_EMH_OP/",
-    "output_dir": "/users/Sadman/Test_Time_Domain_Adaptation/Experiments/Foggy_test_image_outputs/", 
-    "training_data":"/users/Sadman/Test_Time_Domain_Adaptation/data/leftImg8bit_foggyDBF_short/train/hamburg/",
-    "gt_path": "/users/Sadman/Test_Time_Domain_Adaptation/data/gtFine/train/hamburg/",#"/mnt/prj002/Arshad/Model_Generalization_Datasets/Liver/Microgranuloma/Dataset_v5/Training_Dataset/train/train_data_all_512/Label/",
+
+    # Normal Data
+    # "output_dir": "/users/Sadman/Test_Time_Domain_Adaptation/outputs/outputs_without_augmentations_munster/", 
+    # "training_data":"/users/Sadman/Test_Time_Domain_Adaptation/data/leftImg8bit/val/munster/",
+    # "gt_path": "/users/Sadman/Test_Time_Domain_Adaptation/data/gtFine/val/munster/",
+
+    # # Foggy Data
+    "output_dir": "/users/Sadman/Test_Time_Domain_Adaptation/outputs/outputs_without_augmentations_munster_foggy_0.005/", 
+    "training_data":"/users/Sadman/Test_Time_Domain_Adaptation/data/leftImg8bit_foggyDBF_short/val/munster/",
+    "gt_path": "/users/Sadman/Test_Time_Domain_Adaptation/data/gtFine/val/munster/",
 
     # Model Parameters
-    #"model_path":"/home/kuldeepg/Projects/Frameworks/DeepLearning/Experiments/Training/Bileduct/Training_Data_V6/config_4/config_4.wts",
-    # With aug
-    # "model_path": "/users/Sadman/Test_Time_Domain_Adaptation/Experiments/Baseline for Cityscape with 20 classes with Basic Augmentation/best_model_epoch_17_loss_0.388.model",
-    # Without aug
     "model_path": "/users/Sadman/Test_Time_Domain_Adaptation/Experiments/Baseline for Cityscape with 20 classes/epoch_17_loss_0.412.model",
-    
     "model_architecture": "Unet",
     "backbone":"resnet50",
     "preprocessing_config": {"divideBy":255, "mean":[0, 0, 0], "std_dev": [1,1, 1]},
@@ -21,11 +21,41 @@ config = {
     "preprocessing_type": "global",
     "model_weights":False,
 
+    # Device
+    "classes":20,
+
+    "tile_size": 1024,
+    "device_id":0,
+}
+
+with_aug_config = {
+
+
+    # Normal Data
+    # "output_dir": "/users/Sadman/Test_Time_Domain_Adaptation/outputs/outputs_with_augmentations_munster/", 
+    # "training_data":"/users/Sadman/Test_Time_Domain_Adaptation/data/leftImg8bit/val/munster/",
+    # "gt_path": "/users/Sadman/Test_Time_Domain_Adaptation/data/gtFine/val/munster/",
+
+    # # Foggy Data
+    "output_dir": "/users/Sadman/Test_Time_Domain_Adaptation/outputs/outputs_with_augmentations_munster_foggy_0.005/", 
+    "training_data":"/users/Sadman/Test_Time_Domain_Adaptation/data/leftImg8bit_foggyDBF_short/val/munster/",
+    "gt_path": "/users/Sadman/Test_Time_Domain_Adaptation/data/gtFine/val/munster/",
+
+
+    # Model Parameters
+    "model_path": "/users/Sadman/Test_Time_Domain_Adaptation/Experiments/Baseline for Cityscape with 20 classes with Basic Augmentation/best_model_epoch_17_loss_0.388.model",
+    "model_architecture": "Unet",
+    "backbone":"resnet50",
+    "preprocessing_config": {"divideBy":255, "mean":[0, 0, 0], "std_dev": [1,1, 1]},
+    "preprocessing_type": "global",
+    "model_weights":False,
 
     # Device
     "classes":20,
 
     "tile_size": 1024,
     "device_id":0,
-
 }
+
+
+config = with_aug_config
