@@ -117,17 +117,11 @@ def color_encoding(label):
     label[label == 33] = 19
 
     return label
-    
-    
-    
-    
-
-    return label
 
 
 def get_city_scape_data(split, data_dir):
 
-    image_dir = os.path.join(data_dir, "leftImg8bit")
+    image_dir = os.path.join(data_dir, "leftImg8bit_foggyDBF_short")
     label_dir = os.path.join(data_dir, "gtFine")
 
     image_dir_path_list = []
@@ -140,14 +134,48 @@ def get_city_scape_data(split, data_dir):
     for root, dirs, files in os.walk(image_dir_path):
         for image_file in files:
 
-            if image_file.lower().endswith(".png"):
+            if image_file.lower().endswith("_0.02.png"): # ".png"
                 city_name = os.path.basename(root)
                 image_path = os.path.join(root, image_file)
-                label_file = image_file.replace("_leftImg8bit.png", "_gtFine_labelIds.png")
+                label_file = image_file.replace("_leftImg8bit_foggy_beta_0.02.png", "_gtFine_labelIds.png")
                 label_path = os.path.join(label_dir_path, city_name, label_file)
 
                 # Append data
                 image_dir_path_list.append(image_path)
                 label_dir_path_list.append(label_path)
+
+    return image_dir_path_list, label_dir_path_list
+
+def get_cityscape_data_for_domain_adaptation(split, data_dir):
+
+
+    image_dir = os.path.join(data_dir, "leftImg8bit_foggyDBF_short")
+    label_dir = os.path.join(data_dir, "gtFine")
+
+    image_dir_path_list = []
+    label_dir_path_list = []
+
+    image_dir_path = os.path.join(image_dir, split)
+    label_dir_path = os.path.join(label_dir, split)
+    i = 0
+
+    # For Test Time Data
+    for root, dirs, files in os.walk(image_dir_path):
+        for image_file in files:
+
+            if image_file.lower().endswith("_0.02.png"): # ".png"
+                city_name = os.path.basename(root)
+                image_path = os.path.join(root, image_file)
+                label_file = image_file.replace("_leftImg8bit_foggy_beta_0.02.png", "_gtFine_labelIds.png")
+                label_path = os.path.join(label_dir_path, city_name, label_file)
+
+                # Append data
+                image_dir_path_list.append(image_path)
+                label_dir_path_list.append(label_path)
+
+
+    # For Test Data
+
+                   
 
     return image_dir_path_list, label_dir_path_list
