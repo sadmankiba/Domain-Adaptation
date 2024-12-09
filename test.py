@@ -71,7 +71,7 @@ def run_test_time_bn_with_test_train_mixed_data():
         else:
             print("Moved to eval Mode")
             model.eval()
-            for _, (x, y) in tqdm(enumerate(val_dataloader)):
+            for x, y in tqdm(val_dataloader):
                 x = x.cuda()
                 y = y.cuda()
                 with torch.no_grad():
