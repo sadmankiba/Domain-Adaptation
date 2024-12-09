@@ -150,8 +150,8 @@ def get_city_scape_data(split, data_dir, mix):
     if mix == False:
         return image_dir_path_list, label_dir_path_list
 
-    if mix == True: 
-        mix = 1
+    # if mix == True: 
+    #     mix = 1
     
     orig_image_dir_path = os.path.join(orig_image_dir, split)
     num_train_images = 0

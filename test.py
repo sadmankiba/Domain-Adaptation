@@ -17,17 +17,7 @@ batch_size = 8
 # Loading Model
 model = torch.load(MODEL_PATH)
 
-# Dataloader
-val_fetcher = dataloader.Dataloader(split = 'val', augmentations = None, data_dir = DATA_PATH, 
-                    preprocessing_config={"divideBy":255, "mean":[0, 0, 0], "std_dev": [1,1, 1]}, mix=False)
-val_dataloader = DataLoader(val_fetcher, batch_size=batch_size, shuffle=True)
 
-train_fetcher = dataloader.Dataloader(split = 'val', augmentations = None, data_dir = DATA_PATH, 
-                    preprocessing_config={"divideBy":255, "mean":[0, 0, 0], "std_dev": [1,1, 1]}, mix=0.5)
-train_dataloader = DataLoader(train_fetcher, batch_size=batch_size, shuffle=True)
-
-# Metrics
-dice_metric = ImageMetrics(classes = 20)
 
 
 
@@ -57,7 +47,7 @@ def run_test_time_bn_with_test_data():
             print("Mean Dice:", np.mean(classwsie_global_val_dice))
 
        
-def run_test_time_bn_with_test_train_mixed_data():
+def run_test_time_bn_with_test_train_mixed_data(train_dataloader, val_dataloader):
     model.train()
     total_iters = 3
     train_data_iters = [0, 1]
@@ -83,5 +73,40 @@ def run_test_time_bn_with_test_train_mixed_data():
             classwsie_global_val_dice = dice_metric.get_global_dice()
             print("Mean Dice:", np.mean(classwsie_global_val_dice))
 
+    return np.mean(classwsie_global_val_dice)
+
 if __name__ == "__main__":
-    run_test_time_bn_with_test_train_mixed_data()
+
+
+
+    # Dataloader
+
+    for i in range(0, 3):
+
+        j = i/10
+
+        score_list = []
+
+        x_list = []
+
+        val_fetcher = dataloader.Dataloader(split = 'val', augmentations = None, data_dir = DATA_PATH, 
+                        preprocessing_config={"divideBy":255, "mean":[0, 0, 0], "std_dev": [1,1, 1]}, mix=False)
+        val_dataloader = DataLoader(val_fetcher, batch_size=batch_size, shuffle=True)
+
+        train_fetcher = dataloader.Dataloader(split = 'val', augmentations = None, data_dir = DATA_PATH, 
+                        preprocessing_config={"divideBy":255, "mean":[0, 0, 0], "std_dev": [1,1, 1]}, mix=j)
+        train_dataloader = DataLoader(train_fetcher, batch_size=batch_size, shuffle=True)
+
+        # Metrics
+        dice_metric = ImageMetrics(classes = 20)
+
+        score = run_test_time_bn_with_test_train_mixed_data(train_dataloader = train_dataloader, val_dataloader = val_dataloader)
+
+        score_list.append(score)
+        x_list.append(j)
+
+    plt.plot(x_list, score_list)
+    plt.show()
+
+    
+
