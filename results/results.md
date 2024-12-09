@@ -22,7 +22,7 @@ Saved model = baseline 20 cls with aug
 | leftImg8bit_foggyDBF/val/lindau 0.02  |  0.53          |
 | leftImg8bit_foggyDBF/val/frankfurt 0.02|  0.62         |
 
-Test time normalization
+Test time normalization (with aug)
 
 | Test Files                    | BN Files | Foggy/Orig Mix | Shuffle | Num train iter | Global Dice |
 | leftImg8bit_foggyDBF/val/ 0.02| fval     |       No mix   |  False  |   2            | 0.689       |

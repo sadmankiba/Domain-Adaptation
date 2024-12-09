@@ -5,7 +5,7 @@ leftImg8bit_dir = os.path.join(data_dir, "leftImg8bit")
 gtFine_dir = os.path.join(data_dir, "gtFine")
 foggy_dir = os.path.join(data_dir, "leftImg8bit_foggyDBF_short")
 output_dir = "/users/Sadman/Test_Time_Domain_Adaptation/outputs/"
-city = "frankfurt"
+city = "munster"
 fog_score = "0.02"
 
 
@@ -49,14 +49,25 @@ with_aug_config = {
     # "gt_path": "/users/Sadman/Test_Time_Domain_Adaptation/data/gtFine/val/munster/",
 
     # # Foggy Data
+    # "fog_score": fog_score,
+    # "output_dir": f"{output_dir}/outputs_with_augmentations_{city}_foggy_{fog_score}/", 
+    # "training_data": f"{foggy_dir}/val/{city}/",
+    # "gt_path": f"{gtFine_dir}/val/{city}/",
+    
+    # TTN Data
     "fog_score": fog_score,
-    "output_dir": f"{output_dir}/outputs_with_augmentations_{city}_foggy_{fog_score}/", 
+    "output_dir": f"{output_dir}/outputs_with_augmentations_{city}_foggy_ttn_0.2_{fog_score}/", 
     "training_data": f"{foggy_dir}/val/{city}/",
     "gt_path": f"{gtFine_dir}/val/{city}/",
 
 
     # Model Parameters
-    "model_path": "/users/Sadman/Test_Time_Domain_Adaptation/Experiments/Baseline for Cityscape with 20 classes with Basic Augmentation/best_model_epoch_17_loss_0.388.model",
+    # "model_path": "/users/Sadman/Test_Time_Domain_Adaptation/Experiments/Baseline for Cityscape with 20 classes with Basic Augmentation/best_model_epoch_17_loss_0.388.model",
+    
+    # TTN model
+    "model_path": "/users/Sadman/Test_Time_Domain_Adaptation/Experiments/Baseline for Cityscape with 20 classes with Basic Augmentation/ttn_0.2.pth",
+    
+    
     "model_architecture": "Unet",
     "backbone":"resnet50",
     "preprocessing_config": {"divideBy":255, "mean":[0, 0, 0], "std_dev": [1,1, 1]},
