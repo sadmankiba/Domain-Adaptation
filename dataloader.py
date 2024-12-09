@@ -21,10 +21,10 @@ if torch.cuda.is_available():
 
 class Dataloader():
 
-    def __init__(self, split, augmentations, data_dir, preprocessing_config):
+    def __init__(self, split, augmentations, data_dir, preprocessing_config, mix=False):
 
         self.data_dir = data_dir
-        self.image_name_list, self.label_list = get_city_scape_data(split, data_dir)
+        self.image_name_list, self.label_list = get_city_scape_data(split, data_dir, mix=mix)
         self.augmentations = augmentations
         self.split = split
         self.mean = preprocessing_config["mean"]
@@ -119,19 +119,20 @@ def color_encoding(label):
     return label
 
 
-def get_city_scape_data(split, data_dir):
+def get_city_scape_data(split, data_dir, mix):
 
-    image_dir = os.path.join(data_dir, "leftImg8bit_foggyDBF_short")
+    foggy_image_dir = os.path.join(data_dir, "leftImg8bit_foggyDBF_short")
+    orig_image_dir = os.path.join(data_dir, "leftImg8bit")
     label_dir = os.path.join(data_dir, "gtFine")
 
     image_dir_path_list = []
     label_dir_path_list = []
 
-    image_dir_path = os.path.join(image_dir, split)
+    foggy_image_dir_path = os.path.join(foggy_image_dir, split)
     label_dir_path = os.path.join(label_dir, split)
-    i = 0
+    num_foggy_images = 0
 
-    for root, dirs, files in os.walk(image_dir_path):
+    for root, dirs, files in os.walk(foggy_image_dir_path):
         for image_file in files:
 
             if image_file.lower().endswith("_0.02.png"): # ".png"
@@ -143,7 +144,34 @@ def get_city_scape_data(split, data_dir):
                 # Append data
                 image_dir_path_list.append(image_path)
                 label_dir_path_list.append(label_path)
+                num_foggy_images += 1
+    
+    print("Total Foggy Images", num_foggy_images)           
+    if mix == False:
+        return image_dir_path_list, label_dir_path_list
 
+    if mix == True: 
+        mix = 1
+    
+    orig_image_dir_path = os.path.join(orig_image_dir, split)
+    num_train_images = 0
+    for root, dirs, files in os.walk(orig_image_dir_path):
+        for image_file in files:
+            if image_file.lower().endswith(".png"):
+                city_name = os.path.basename(root)
+                image_path = os.path.join(root, image_file)
+                label_file = image_file.replace("_leftImg8bit.png", "_gtFine_labelIds.png")
+                label_path = os.path.join(label_dir, split, city_name, label_file)
+                
+                # Append data
+                image_dir_path_list.append(image_path)
+                label_dir_path_list.append(label_path)
+                num_train_images += 1
+                if num_train_images >= mix * num_foggy_images:
+                    break
+    
+    print("Total Train Images", num_train_images)
+    
     return image_dir_path_list, label_dir_path_list
 
 def get_cityscape_data_for_domain_adaptation(split, data_dir):

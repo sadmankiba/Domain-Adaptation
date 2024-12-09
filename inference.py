@@ -8,7 +8,7 @@ from tqdm import tqdm
 from metrics import ImageMetrics
 from dataloader import color_encoding
 
-def infer_model(model_config, data_path, output_path =None, gt_path = None):
+def infer_model(model_config, data_path, output_path =None, gt_path = None, fog_score = None):
 
     model_architecture = model_config["model_architecture"]
     backbone = model_config["backbone"]
@@ -32,13 +32,18 @@ def infer_model(model_config, data_path, output_path =None, gt_path = None):
 
     model.eval()
     model.to(device)
-
+    print("loaded model")
 
     # Metrics
     metric_object = ImageMetrics(classes = classes)
     
+    image_paths = None
+    if 'foggy' in data_path:
+        image_paths = glob(data_path + f"*{fog_score}.png")
+    else:
+        image_paths = glob(data_path + "*.png")
 
-    for image_path in tqdm(glob(data_path + "*0.005.png")):
+    for image_path in tqdm(image_paths):
    
 
         # READ IMAGE
@@ -58,8 +63,10 @@ def infer_model(model_config, data_path, output_path =None, gt_path = None):
         if gt_path is not None:
             label_name = os.path.basename(image_path)
             image_path.find("leftImg8bit")
-            label_path = os.path.join(gt_path, label_name.replace("leftImg8bit_foggy_beta_0.005", "gtFine_labelIds"))
-            #label_path = os.path.join(gt_path, label_name.replace("leftImg8bit", "gtFine_labelIds"))
+            if 'foggy' in data_path:
+                label_path = os.path.join(gt_path, label_name.replace(f"leftImg8bit_foggy_beta_{fog_score}", "gtFine_labelIds"))
+            else:
+                label_path = os.path.join(gt_path, label_name.replace("leftImg8bit", "gtFine_labelIds"))
             label = cv2.imread(label_path)
             label = cv2.cvtColor(label, cv2.COLOR_BGR2GRAY)
             label = cv2.resize(label, (1024, 512), interpolation=cv2.INTER_LINEAR_EXACT)
@@ -90,10 +97,14 @@ def infer_model(model_config, data_path, output_path =None, gt_path = None):
         precision = metric_object.get_global_precision()
         recall = metric_object.get_global_recall()
 
+        output_str = ""
         for class_index in range(classes):
-            print(f"Class: {class_index}")
-            print(f"Dice:{dice[class_index]:.2f}")
-            print(f"Recall:{recall[class_index]:.2f}")
-            print(f"Precision:{precision[class_index]:}")
+            output_str += f"Class: {class_index}\n"
+            output_str += f"Dice:{dice[class_index]:.2f}\n"
+            output_str += f"Recall:{recall[class_index]:.2f}\n"
+            output_str += f"Precision:{precision[class_index]}\n"
             
-        print(f"Global Dice: {sum(dice)/classes:.2f}")        
+        output_str += f"Global Dice: {sum(dice)/classes:.2f}"
+        print(output_str)
+        with open(output_path + "results.txt", "w") as f:
+            f.write(output_str)        

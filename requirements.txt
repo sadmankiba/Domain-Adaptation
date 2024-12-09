@@ -1,0 +1,5 @@
+matplotlib
+numpy
+segmentation_models_pytorch
+tensorboard
+albumentations

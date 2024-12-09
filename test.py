@@ -18,40 +18,70 @@ batch_size = 8
 model = torch.load(MODEL_PATH)
 
 # Dataloader
-val_fetcher = dataloader.Dataloader(split = 'val', augmentations = None, data_dir = DATA_PATH, preprocessing_config={"divideBy":255, "mean":[0, 0, 0], "std_dev": [1,1, 1]})
-val_dataloader = DataLoader(val_fetcher, batch_size=batch_size, shuffle=False)
+val_fetcher = dataloader.Dataloader(split = 'val', augmentations = None, data_dir = DATA_PATH, 
+                    preprocessing_config={"divideBy":255, "mean":[0, 0, 0], "std_dev": [1,1, 1]}, mix=False)
+val_dataloader = DataLoader(val_fetcher, batch_size=batch_size, shuffle=True)
+
+train_fetcher = dataloader.Dataloader(split = 'val', augmentations = None, data_dir = DATA_PATH, 
+                    preprocessing_config={"divideBy":255, "mean":[0, 0, 0], "std_dev": [1,1, 1]}, mix=0.5)
+train_dataloader = DataLoader(train_fetcher, batch_size=batch_size, shuffle=True)
 
 # Metrics
 dice_metric = ImageMetrics(classes = 20)
 
 
 
+def run_test_time_bn_with_test_data():
+    model.train()
+    for k in tqdm(range(3)):
 
-model.train()
-for k in tqdm(range(3)):
+        if k < 2: 
+            for x,y in val_dataloader:
+                x = x.cuda()
+                with torch.no_grad():
+                    output = model(x)
 
-    if k < 2: 
-        for x,y in val_dataloader:
-            x = x.cuda()
-            with torch.no_grad():
-                output = model(x)
+        else:
+            print("Moved to eval Mode")
+            model.eval()
+            for x, y in val_dataloader:
+                x = x.cuda()
+                y = y.cuda()
+                with torch.no_grad():
+                    pred_output = model(x)
+            
+                pred_output_copy = torch.softmax(pred_output.detach().clone(), dim = 1).argmax(1)
+                classwise_val_dice_score = dice_metric.fit(pred_output_copy, y)
+            
+            classwsie_global_val_dice = dice_metric.get_global_dice()
+            print("Mean Dice:", np.mean(classwsie_global_val_dice))
 
-    else:
-        print("Moved to eval Mode")
-        model.eval()
-        for x, y in val_dataloader:
-            x = x.cuda()
-            y = y.cuda()
-            with torch.no_grad():
-                pred_output = model(x)
-        
-            pred_output_copy = torch.softmax(pred_output.detach().clone(), dim = 1).argmax(1)
-            classwise_val_dice_score = dice_metric.fit(pred_output_copy, y)
-        
-        classwsie_global_val_dice = dice_metric.get_global_dice()
-        print("Mean Dice:", np.mean(classwsie_global_val_dice))
+       
+def run_test_time_bn_with_test_train_mixed_data():
+    model.train()
+    total_iters = 3
+    train_data_iters = [0, 1]
+    eval_iters = [2]
+    for k in range(total_iters):
+        if k in train_data_iters:
+            for x, y in tqdm(train_dataloader):
+                x = x.cuda()
+                with torch.no_grad():
+                    output = model(x)
+        else:
+            print("Moved to eval Mode")
+            model.eval()
+            for _, (x, y) in tqdm(enumerate(val_dataloader)):
+                x = x.cuda()
+                y = y.cuda()
+                with torch.no_grad():
+                    pred_output = model(x)
+            
+                pred_output_copy = torch.softmax(pred_output.detach().clone(), dim = 1).argmax(1)
+                classwise_val_dice_score = dice_metric.fit(pred_output_copy, y)
+            
+            classwsie_global_val_dice = dice_metric.get_global_dice()
+            print("Mean Dice:", np.mean(classwsie_global_val_dice))
 
-
-    
-
-
+if __name__ == "__main__":
+    run_test_time_bn_with_test_train_mixed_data()
